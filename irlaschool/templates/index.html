@@ -1,0 +1,309 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Receipt Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --light-gray: #f3f4f6;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .receipt-card {
+            transition: transform 0.3s ease;
+        }
+        
+        .receipt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card {
+            border-left: 4px solid;
+        }
+        
+        .total-stat {
+            border-left-color: var(--primary-color);
+        }
+        
+        .paid-stat {
+            border-left-color: var(--accent-color);
+        }
+        
+        .pending-stat {
+            border-left-color: #f59e0b;
+        }
+        
+        .overdue-stat {
+            border-left-color: var(--danger-color);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">School Receipt Management</h1>
+                <p class="text-gray-600">Track and manage all payment receipts</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                <div class="relative">
+                    <input type="text" placeholder="Search receipts..." class="search-input pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 w-64">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center" onclick="location.href = 'form/'">
+                    <i class="fas fa-plus mr-2"></i> New Receipt
+                </button>
+            </div>
+        </header>
+        
+        <!-- Stats Cards -->
+        <div class="stats-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card total-stat bg-white p-6 rounded-lg shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 font-medium">Total Receipts</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">{{ total_receipt }}</h3>
+                    </div>
+                    <div class="bg-indigo-100 p-3 rounded-full">
+                        <i class="fas fa-receipt text-indigo-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-green-600 mt-2 text-sm font-medium">
+                    <i class="fas fa-arrow-up mr-1"></i> 8.2% from last month
+                </p>
+            </div>
+            
+            <div class="stat-card paid-stat bg-white p-6 rounded-lg shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 font-medium">Total Paid</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">₹{{ total_paid|intcomma }}</h3>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-rupee-sign text-green-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-green-600 mt-2 text-sm font-medium">
+                    <i class="fas fa-arrow-up mr-1"></i> 12.5% from last month
+                </p>
+            </div>
+            
+            <div class="stat-card pending-stat bg-white p-6 rounded-lg shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 font-medium">Pending Payments</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">0</h3>
+                    </div>
+                    <div class="bg-yellow-100 p-3 rounded-full">
+                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-red-600 mt-2 text-sm font-medium">
+                    <i class="fas fa-arrow-down mr-1"></i>0% from last month
+                </p>
+            </div>
+            
+            <div class="stat-card overdue-stat bg-white p-6 rounded-lg shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 font-medium">Overdue Payments</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">0</h3>
+                    </div>
+                    <div class="bg-red-100 p-3 rounded-full">
+                        <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-green-600 mt-2 text-sm font-medium">
+                    <i class="fas fa-arrow-down mr-1"></i>0% from last month
+                </p>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="dashboard-grid grid grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Recent Receipts -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800">Recent Receipts</h2>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-600">Today</button>
+                            <!-- <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200">This Week</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200">This Month</button> -->
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == 'success'%}
+                                        <span class="px-3 py-1 text-sm bg-green-600 text-white rounded-md">Data Added</span>
+                                    {% endif %}
+                                    {% if message.tags == 'error'%}
+                                        <span class="px-3 py-1 text-sm bg-red-600 text-white rounded-md">Not Added</span>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Sample Receipt Card 1 -->
+                        {% for receipt in receipt_data %}
+                        <div class="receipt-card bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-indigo-100 p-2 rounded-full">
+                                            <i class="fas fa-receipt text-indigo-600"></i>
+                                        </div>
+                                        <div>
+                                            <!-- <h3 class="font-semibold text-gray-800">REC-2023-00145</h3> -->
+                                            <h3 class="font-semibold text-gray-800"> {{receipt.date}}- {{receipt.receipt_no}}</h3>
+                                            <p class="text-sm text-gray-500">{{ receipt.student_name }} - {{receipt.standard | upper}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Tuition Fee</span>
+                                        <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">Exam Fee</span>
+                                        {%if receipt.with_computers%}
+                                        <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">Computer Fee</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <h3 class="font-bold text-gray-800">₹{{receipt.total_fees|intcomma}}</h3>
+                                    <p class="text-sm text-gray-500">{{receipt.date}}</p>
+                                    <span class="inline-block mt-1 px-2 py-1 text-xs font-medium bg-red-100 text-white-800 hover:bg-red-600 rounded-full"><a href="receipt/{{receipt.receipt_no}}">Print</a></span>
+                                    <span class="inline-block mt-1 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Paid</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    <div class="mt-6 flex justify-between items-center">
+                        <p class="text-sm text-gray-500">Showing 4 of {{total_receipt|intcomma}} receipts</p>
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center">
+                            View All <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Summary and Actions -->
+            <div class="space-y-6">
+                <!-- Payment Methods Chart -->
+                <!-- <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Payment Methods</h2>
+                    <div class="h-64">
+                        <img src="https://placehold.co/600x400" alt="Bar chart showing payment method distribution with cash at 35%, credit card at 25%, UPI at 30%, and cheque at 10%" />
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-indigo-500 rounded-full mr-2"></div>
+                            <span class="text-sm text-gray-600">Cash (35%)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                            <span class="text-sm text-gray-600">UPI (30%)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                            <span class="text-sm text-gray-600">Credit Card (25%)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                            <span class="text-sm text-gray-600">Cheque (10%)</span>
+                        </div>
+                    </div>
+                </div> -->
+                
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button class="flex flex-col items-center justify-center p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 text-indigo-700">
+                            <i class="fas fa-print text-2xl mb-2"></i>
+                            <span>Print Receipt</span>
+                        </button>
+                        <button class="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 text-green-700" onclick="location.href = 'export_data/'">
+                            <i class="fas fa-file-export text-2xl mb-2"></i>
+                            <span>Export Data</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <!-- <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">Payment received from Rahul Sharma</p>
+                                <p class="text-xs text-gray-500">₹3,500 - 10 mins ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-receipt text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">Generated receipt for Priya Patel</p>
+                                <p class="text-xs text-gray-500">25 mins ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-yellow-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-clock text-yellow-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">Reminder sent to Amit Kumar</p>
+                                <p class="text-xs text-gray-500">1 hour ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+   
+    <script>
+       
+    </script>
+</body>
+</html>

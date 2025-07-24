@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .form-container {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        .form-container:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        #feeAmount::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4f46e5;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <div class="form-container bg-white rounded-xl p-8 w-full max-w-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold gradient-text">Money Receipt</h1>
+            <p class="text-gray-600 mt-2">Complete the form to collect money</p>
+        </div>
+
+        <form id="studentForm" class="space-y-6" method="post" action="{% url 'submitform'%}">
+            {% csrf_token %}
+            <!-- Student Name Field -->
+            <div>
+                <label for="studentName" class="block text-sm font-medium text-gray-700 mb-1">Student Full Name *</label>
+                <input type="text" id="studentName" name="studentName" required
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                    placeholder="Enter student's full name">
+                <p class="mt-1 text-sm text-red-600 hidden" id="nameError">Please enter a valid name</p>
+            </div>
+
+            <!-- Section Selection -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Section *</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="section" value="preprimary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" required>
+                        <span class="ml-2">Pre-Primary</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="section" value="primary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2">Primary</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="section" value="secondary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2">Secondary</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="section" value="college" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2">College</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Standard/Class Selection -->
+            <div>
+                <label for="standard" class="block text-sm font-medium text-gray-700 mb-1">Standard/Class *</label>
+                <select id="standard" name="standard" required
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white">
+                    <option value="" disabled selected>Select Standard</option>
+                    <option value="nursery">Nursery</option>
+                    <option value="lkg">LKG</option>
+                    <option value="ukg">UKG</option>
+                    <option value="1">Class 1</option>
+                    <option value="2">Class 2</option>
+                    <option value="3">Class 3</option>
+                    <option value="4">Class 4</option>
+                    <option value="5">Class 5</option>
+                    <option value="6">Class 6</option>
+                    <option value="7">Class 7</option>
+                    <option value="8">Class 8</option>
+                    <option value="9">Class 9</option>
+                    <option value="10">Class 10</option>
+                    <option value="11">Class 11</option>
+                    <option value="12">Class 12</option>
+                </select>
+            </div>
+
+            <!-- Total Fees - Range Slider + Input -->
+            <div>
+                <label for="feeAmount" class="block text-sm font-medium text-gray-700 mb-1">
+                    Total Fees*
+                </label>
+                <!-- <input type="range" id="feeAmount" name="feeAmount" min="1000" max="50000" step="500" value="5000"
+                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mb-2"> -->
+                    <input type="number" id="totalFees" name="feeAmount" required min="0" step="0.01" placeholder="Enter total fees amount" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+            </div>
+
+            <!-- Computer Option -->
+            <div class="flex items-center">
+                <input type="checkbox" id="computerOption" name="computerOption"
+                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                <label for="computerOption" class="ml-2 block text-sm text-gray-700">
+                    Include Computer Course
+                </label>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pt-4 flex gap-4">
+                <button type="submit"
+                    class="flex-1 bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition font-medium">
+                    Save
+                </button>
+                <a href="/">
+                    <button type="button" id="printBtn"
+                        class="flex-1 bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition font-medium">
+                        Cancel
+                    </button>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Format and update fee display
+            // const feeSlider = document.getElementById('feeAmount');
+            // const feeDisplay = document.getElementById('feeValue');
+            
+            // feeSlider.addEventListener('input', function() {
+            //     const formattedValue = new Intl.NumberFormat('en-IN', {
+            //         style: 'currency',
+            //         currency: 'INR',
+            //         maximumFractionDigits: 0
+            //     }).format(this.value);
+                
+            //     feeDisplay.textContent = formattedValue;
+            // });
+
+            // Form validation
+            const form = document.getElementById('studentForm');
+            const nameInput = document.getElementById('studentName');
+            const nameError = document.getElementById('nameError');
+
+            nameInput.addEventListener('input', function() {
+                if (this.value.trim().length < 2) {
+                    nameError.classList.remove('hidden');
+                } else {
+                    nameError.classList.add('hidden');
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let isValid = true;
+
+                // Validate name
+                if (nameInput.value.trim().length < 2) {
+                    nameError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    nameError.classList.add('hidden');
+                }
+
+                // Add more validations as needed
+
+                if (isValid) {
+                    // alert('Student information saved successfully!');
+                    // Here you would typically send the data to a server
+                    form.submit();
+                }
+
+            // Print functionality
+           
+            //  document.getElementById('printBtn').addEventListener('click', function() {
+            //     window.history.go(1);
+            // });
+            });
+            // Update standard options based on selected section
+            const sectionRadios = document.querySelectorAll('input[name="section"]');
+            const standardSelect = document.getElementById('standard');
+            
+            sectionRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Clear existing options
+                    while (standardSelect.options.length > 1) {
+                        standardSelect.remove(1);
+                    }
+                    
+                    let options = [];
+                    switch(this.value) {
+                        case 'preprimary':
+                            options = [
+                                {value: 'nursery', text: 'Nursery'},
+                                {value: 'lkg', text: 'LKG'},
+                                {value: 'ukg', text: 'UKG'}
+                            ];
+                            break;
+                        case 'primary':
+                            options = [
+                                {value: '1', text: 'Class 1'},
+                                {value: '2', text: 'Class 2'},
+                                {value: '3', text: 'Class 3'},
+                                {value: '4', text: 'Class 4'},
+                               
+                            ];
+                            break;
+                        case 'secondary':
+                            options = [
+                                 {value: '5', text: 'Class 5'},
+                                {value: '6', text: 'Class 6'},
+                                {value: '7', text: 'Class 7'},
+                                {value: '8', text: 'Class 8'},
+                                 {value: '9', text: 'Class 9'},
+                                {value: '10', text: 'Class 10'},
+                            ];
+                            break;
+                        case 'college':
+                            options = [
+                                {value: '11', text: 'Class 11'},
+                                {value: '12', text: 'Class 12'}
+                            ];
+                            break;
+                    }
+                    
+                    options.forEach(opt => {
+                        const option = new Option(opt.text, opt.value);
+                        standardSelect.add(option);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
