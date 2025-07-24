@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 # Create your views here.
 from .models import MoneyReceipt
@@ -109,3 +109,12 @@ def submitform(request):
         
     else:
         return render(request,'forms.html')
+
+
+def printform(request,receipt_no):
+   
+    try:
+        receipt = get_object_or_404(MoneyReceipt,receipt_no=receipt_no)
+        return render(request,'printform.html',{"receipt":receipt})
+    except Exception as err:
+        return render(request,'printform.html',{"error":err})
