@@ -25,7 +25,7 @@ def export_receipts_to_excel(request):
         for receipt in receipts:
             ws.append([
                 str(receipt.receipt_no),
-                receipt.student_name,
+                receipt.student_name.capitalize(),
                 receipt.standard,
                 receipt.date.strftime('%Y-%m-%d'),
                 float(receipt.total_fees)
@@ -112,9 +112,8 @@ def submitform(request):
 
 
 def printform(request,receipt_no):
-   
     try:
-        receipt = get_object_or_404(MoneyReceipt,receipt_no=receipt_no)
+        receipt = MoneyReceipt.objects.get(receipt_no=receipt_no)
         return render(request,'printform.html',{"receipt":receipt})
     except Exception as err:
         return render(request,'printform.html',{"error":err})
