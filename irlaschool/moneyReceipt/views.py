@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from openpyxl import Workbook
 from .models import MoneyReceipt
+from num2words import num2words
 
 def export_receipts_to_excel(request):
     # Create a new Excel workbook
@@ -67,7 +68,7 @@ def index(request):
     total_receipt = MoneyReceipt.objects.count()
     total_paid = MoneyReceipt.objects.aggregate(total=Sum('total_fees'))
     receipt_data = MoneyReceipt.objects.order_by('date')[::-1][:4]
-    print(type(receipt_data))
+    print(receipt_data)
     return render(request, 'index.html',{
         'total_receipt':total_receipt,
         'total_paid':total_paid['total'],
@@ -111,9 +112,18 @@ def submitform(request):
         return render(request,'forms.html')
 
 
-def printform(request,receipt_no):
+def printform(request,receipt_no:int):
     try:
         receipt = MoneyReceipt.objects.get(receipt_no=receipt_no)
-        return render(request,'printform.html',{"receipt":receipt})
+        feesInWords = num2words(receipt.total_fees,lang='en_IN')
+        return render(request,'printform.html',{
+            "receipt":receipt,
+            "feesinwords":feesInWords
+            })
+    except MoneyReceipt.DoesNotExist:
+        error_message = f"MoneyReceipt with receipt_no '{receipt_no}' does not exist."
+        print(error_message)
+        return render(request, 'printform.html', {"error": error_message})
     except Exception as err:
-        return render(request,'printform.html',{"error":err})
+        print(err)
+        return render(request,'printform.html',{"error":"An unexpected error occurred."})

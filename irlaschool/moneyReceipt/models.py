@@ -7,7 +7,7 @@ import string
 
 def generate_receipt_no():
     # Generate a unique receipt number (e.g., 8 characters long)
-    return ''.join(random.choices(string.digits, k=8))
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
 
 # Create your models here.
 
