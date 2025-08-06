@@ -11,9 +11,10 @@
        }
        table{
         border-collapse: collapse;
+        height: 500px;
        }
        td{
-        padding: 5px;
+        padding: 2px;
         text-align: center;
        }
     </style>
@@ -43,12 +44,21 @@
             <div>
                 <table border="1" align="center" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td  colspan="4" class="head">Fee Receipt(School copy)</td>
+                        <td colspan="4">
+                           <p>ABDUL MAJEED KHATIB JUNIOR COLLEGE <br> OF ARTS & COMMERCE </p>
+                            <small>
+                                Irla Jama Masjid Compound, off Gulmohar Road, Juhu Scheme,<br>
+                                Andheri (w), Mumbai - 400049 Tel: off.26244080/26284693
+                            </small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th  colspan="4" class="head">Fee Receipt(School copy)</th>
                     </tr>
                     <tr>
                         <td> Receipt No.  </td>
                         <td>
-                            {{receipt.receipt_no}}
+                           <b> {{receipt.receipt_no}} </b>
                             
                         </td>
                         <td>
@@ -70,12 +80,20 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            Student's Fees Details
+                            <b>Student's Fees Details</b>
                         </td>
-                        <td>Amount</td>
+                        <td><b>Amount</b></td>
                     </tr>
+                    {% if receipt.with_computers %}
                     <tr>
-                        <td colspan="2">Total Fee</td>
+                        <td colspan="2">Computer fees*</td>
+                        <td><b>Added</b></td>
+                    </tr>
+
+
+                    {% endif %}
+                    <tr>
+                        <td colspan="2">Total Fees</td>
                         <td>{{receipt.total_fees}}</td>
                     </tr>
                     <tr>
@@ -84,7 +102,68 @@
                     </tr>
                 </table>
             </div>
-            
+            <hr>
+            <div>
+                <table border="1" align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td colspan="4">
+                            <p>ABDUL MAJEED KHATIB JUNIOR COLLEGE <br> OF ARTS & COMMERCE </p>
+                            <small>
+                                Irla Jama Masjid Compound, off Gulmohar Road, Juhu Scheme,<br>
+                                Andheri (w), Mumbai - 400049 Tel: off.26244080/26284693
+                            </small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th  colspan="4" class="head">Fee Receipt(Student copy)</th>
+                    </tr>
+                    <tr>
+                        <td> Receipt No.  </td>
+                        <td>
+                           <b> {{receipt.receipt_no}} </b>
+                            
+                        </td>
+                        <td>
+                            Date:   {{receipt.date}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>GRNO.</td>
+                        <td colspan="2">enter grno</td>
+                    </tr>
+                    <tr>
+                        <td>Student Name</td>
+                        <td colspan="2">{{receipt.student_name|upper}}</td>
+                    </tr>
+                    <tr>
+                        <td>Class/Section</td>
+                        <td>{{receipt.standard}}</td>
+                        <td>{{receipt.section|upper}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <b>Student's Fees Details</b>
+                        </td>
+                        <td><b>Amount</b></td>
+                    </tr>
+                    {% if receipt.with_computers %}
+                    <tr>
+                        <td colspan="2">Computer fees*</td>
+                        <td><b>Added</b></td>
+                    </tr>
+
+
+                    {% endif %}
+                    <tr>
+                        <td colspan="2">Total Fees</td>
+                        <td>{{receipt.total_fees}}</td>
+                    </tr>
+                    <tr>
+                        <td>Rupees In Words</td>
+                        <td colspan="4">{{feesinwords|upper}} ONLY</td>
+                    </tr>
+                </table>
+            </div>
         </div>
             <!-- Action Buttons -->
             <div class="pt-4 flex gap-4">

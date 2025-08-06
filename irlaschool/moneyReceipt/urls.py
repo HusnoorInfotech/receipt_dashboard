@@ -8,4 +8,6 @@ urlpatterns = [
     path("form/",views.showform,name="show_forms"),
     path("submitform/",views.submitform, name="submitform"),
     path("receipt/<str:receipt_no>/",views.printform,name="printreceipt"),
+    path("showformtoedit/<str:receipt_no>/",views.showformtoedit, name="showformtoedit"),
+    path("updateform/<str:receipt_no>/",views.updateform,name="updateform")
 ]

@@ -8,6 +8,9 @@ from django.http import HttpResponse
 from openpyxl import Workbook
 from .models import MoneyReceipt
 from num2words import num2words
+from django.views.decorators.csrf import csrf_exempt
+import urllib.parse
+
 
 def export_receipts_to_excel(request):
     # Create a new Excel workbook
@@ -68,7 +71,7 @@ def index(request):
     total_receipt = MoneyReceipt.objects.count()
     total_paid = MoneyReceipt.objects.aggregate(total=Sum('total_fees'))
     receipt_data = MoneyReceipt.objects.order_by('date')[::-1][:4]
-    print(receipt_data)
+    # print(receipt_data)s
     return render(request, 'index.html',{
         'total_receipt':total_receipt,
         'total_paid':total_paid['total'],
@@ -104,7 +107,7 @@ def submitform(request):
             messages.success(request,"Formsubmitted successfully")
             return redirect('index')
         except Exception as err:
-            message.error(request,"data not saved")
+            messages.error(request,"data not saved")
             return redirect('index')
 
         
@@ -112,7 +115,7 @@ def submitform(request):
         return render(request,'forms.html')
 
 
-def printform(request,receipt_no:int):
+def printform(request,receipt_no):
     try:
         receipt = MoneyReceipt.objects.get(receipt_no=receipt_no)
         feesInWords = num2words(receipt.total_fees,lang='en_IN')
@@ -122,8 +125,58 @@ def printform(request,receipt_no:int):
             })
     except MoneyReceipt.DoesNotExist:
         error_message = f"MoneyReceipt with receipt_no '{receipt_no}' does not exist."
-        print(error_message)
+        # print(error_message)
         return render(request, 'printform.html', {"error": error_message})
     except Exception as err:
-        print(err)
+        # print(err)
         return render(request,'printform.html',{"error":"An unexpected error occurred."})
+
+
+# update the form
+
+def showformtoedit(request,receipt_no):
+    try:
+        receipt = MoneyReceipt.objects.get(receipt_no=receipt_no)
+        # print(receipt)
+        return render(request,'forms.html',{"receipt":receipt})
+    except MoneyReceipt.DoesNotExist:
+        error_message = f"MoneyReceipt with receipt_no '{receipt_no}' does not exist."
+        return render(request, 'printform.html', {"error": error_message})
+    except Exception as err:
+        return render(request, 'printform.html',{"error":err})
+
+
+# @csrf_exempt  # Use with caution; consider using proper CSRF protection
+def updateform(request,receipt_no):
+    try:
+        receipt = MoneyReceipt.objects.get(receipt_no=receipt_no)
+
+        if request.method == 'POST':
+            student_name = request.POST.get('studentName')
+            # print(student_name)
+            student_section = request.POST.get('section')
+            student_standard = request.POST.get('standard')
+            student_fee = request.POST.get('feeAmount')
+            student_computer = request.POST.get('computerOption')
+            if request.POST.get('_method') == 'PUT':
+                # Update the receipt fields
+                receipt.section = student_section
+                receipt.with_computers = True if student_computer == 'on' else False
+                # receipt.student_name = student_name
+                receipt.standard = student_standard
+                receipt.total_fees = student_fee
+                # Save the updated receipt
+                receipt.save()
+                
+                messages.success(request,"data change")
+                return redirect('index')
+        else:
+            return redirect('index')
+    except MoneyReceipt.DoesNotExist:
+        messages.error(request, "Receipt not found")
+        return redirect('index')
+    except Exception as err:
+        messages.error(request,err)
+        return redirect('index')
+
+

@@ -31,6 +31,195 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    {% if receipt %}
+    <div class="form-container bg-white rounded-xl p-8 w-full max-w-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold gradient-text">Money Receipt</h1>
+            <p class="text-gray-600 mt-2">Change the data</p>
+        </div>
+
+        <form id="studentForm" class="space-y-6" method="post" action="{% url 'updateform' receipt.receipt_no %}">
+            {% csrf_token %}
+            <input type="hidden" name="_method" value="PUT">
+            <!-- Student Name Field -->
+            <div>
+                <label for="studentName" class="block text-sm font-medium text-gray-700 mb-1">Student Full Name *</label>
+                <input type="text" id="studentName" name="studentName" value="{{receipt.student_name}}"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                    placeholder="Enter student's full name" disabled>
+                <p class="mt-1 text-sm text-red-600 hidden" id="nameError">Please enter a valid name</p>
+            </div>
+
+            <!-- Section Selection -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Section *</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        {% if receipt.section == 'preprimary' %}
+                        <input type="radio" name="section" value="preprimary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" checked>
+                        <span class="ml-2">Pre-Primary</span>
+                        {% else %}
+                        <input type="radio" name="section" value="preprimary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2">Pre-Primary</span>
+                        {% endif %}
+                    </label>
+                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        {% if receipt.section == 'primary' %}
+                        <input type="radio" name="section" value="primary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" checked>
+                        <span class="ml-2">Primary</span>
+                        {% else %}
+                        <input type="radio" name="section" value="primary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" checked>
+                        <span class="ml-2">Primary</span>
+                        {% endif %}
+                    </label>
+                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        {% if receipt.section == 'secondary' %}
+                        <input type="radio" name="section" value="secondary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" checked>
+                        <span class="ml-2">Secondary</span>
+                        {% else %}
+                        <input type="radio" name="section" value="secondary" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2">Secondary</span>
+                        {% endif %}
+                    </label>
+                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        {% if receipt.section == 'college' %}
+                        <input type="radio" name="section" value="college" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" checked>
+                        <span class="ml-2">College</span>
+                        {% else %}
+                        <input type="radio" name="section" value="college" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2">College</span>
+                    </label>
+                        {% endif %}
+                </div>
+            </div>
+
+            <!-- Standard/Class Selection -->
+            <div>
+                <label for="standard" class="block text-sm font-medium text-gray-700 mb-1">Standard/Class *</label>
+                <select id="standard" name="standard"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white">
+                    <option value="" disabled selected>Select Standard</option>
+                    {% if receipt.standard == 'nursery' %}
+                    <option value="nursery" selected>Nursery</option>
+                    {% else %}
+                    <option value="nursery">Nursery</option>
+                    {% endif %}
+                    {% if receipt.standard == 'lkg' %}
+                    <option value="lkg" selected>LKG</option>
+                    {% else %}
+                    <option value="lkg">LKG</option>
+                    {% endif %}
+                    {% if receipt.standard == 'ukg' %}
+                    <option value="ukg" selected>UKG</option>
+                    {% else %}
+                    <option value="ukg">UKG</option>
+                    {% endif %}
+                    {% if receipt.standard == '1' %}
+                    <option value="1" selected>Class 1</option>
+                    {% else %}
+                    <option value="1">Class 1</option>
+                    {% endif %}
+                    {% if receipt.standard == '2' %}
+                    <option value="2" selected>Class 2</option>
+                    {% else %}
+                    <option value="2" >Class 2</option>
+                    {% endif %}
+                    {% if receipt.standard == '3' %}
+                    <option value="3" selected>Class 3</option>
+                    {% else %}
+                    <option value="3">Class 3</option>
+                    {% endif %}
+                    {% if receipt.standard == '4' %}
+                    <option value="4" selected>Class 4</option>
+                    {% else %}
+                    <option value="4">Class 4</option>
+                    {% endif %}
+                    {% if receipt.standard == '5' %}
+                    <option value="5" selected>Class 5</option>
+                    {% else %}
+                    <option value="5">Class 5</option>
+                    {% endif %}
+                    {% if receipt.standard == '6' %}
+                    <option value="6" selected>Class 6</option>
+                    {% else %}
+                    <option value="6">Class 6</option>
+                    {% endif %}
+                    {% if receipt.standard == '7' %}
+                    <option value="7" selected>Class 7</option>
+                    {% else %}
+                    <option value="7">Class 7</option>
+                    {% endif %}
+                    {% if receipt.standard == '8'%}
+                    <option value="8" selected>Class 8</option>
+                    {% else %}
+                    <option value="8">Class 8</option>
+                    {% endif %}
+                    {% if receipt.standard == '9'%}
+                    <option value="9" selected>Class 9</option>
+                    {% else %}
+                    <option value="9">Class 9</option>
+                    {% endif %}
+                    {% if receipt.standard == '10' %}
+                    <option value="10" selected>Class 10</option>
+                    {% else %}
+                    <option value="10">Class 10</option>
+                    {% endif %}
+                    {% if receipt.standard == '11' %}
+                    <option value="11" selected>Class 11</option>
+                    {% else %}
+                    <option value="11">Class 11</option>
+                    {% endif %}
+                    {% if receipt.standard == '12' %}
+                    <option value="12" selected>Class 12</option>
+                    {% else %}
+                    <option value="12">Class 12</option>
+                    {% endif %}
+                </select>
+            </div>
+
+            <!-- Total Fees - Range Slider + Input -->
+            <div>
+                <label for="feeAmount" class="block text-sm font-medium text-gray-700 mb-1">
+                    Total Fees*
+                </label>
+                <!-- <input type="range" id="feeAmount" name="feeAmount" min="1000" max="50000" step="500" value="5000"
+                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mb-2"> -->
+                    <input type="number" id="totalFees" value="{{receipt.total_fees}}" name="feeAmount" required min="0" step="1" placeholder="Enter total fees amount" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+            </div>
+
+            <!-- Computer Option -->
+            <div class="flex items-center">
+                {% if receipt.with_computers%}
+                <input type="checkbox" id="computerOption" name="computerOption"
+                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                     <label for="computerOption" class="ml-2 block text-sm text-gray-700">
+                    Include Computer Course
+                </label>
+                {% else %}
+                <input type="checkbox" id="computerOption" name="computerOption"
+                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                <label for="computerOption" class="ml-2 block text-sm text-gray-700">
+                    Include Computer Course
+                </label>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pt-4 flex gap-4">
+                <button type="submit"
+                    class="flex-1 bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition font-medium">
+                    update
+                </button>
+                <a href="/">
+                    <button type="button" id="printBtn"
+                        class="flex-1 bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition font-medium">
+                        Cancel
+                    </button>
+                </a>
+            </div>
+        </form>
+    </div>
+    {% else %}
     <div class="form-container bg-white rounded-xl p-8 w-full max-w-2xl">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold gradient-text">Money Receipt</h1>
@@ -129,6 +318,7 @@
             </div>
         </form>
     </div>
+    {% endif %}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -168,10 +168,10 @@
                             {% if messages %}
                                 {% for message in messages %}
                                     {% if message.tags == 'success'%}
-                                        <span class="px-3 py-1 text-sm bg-green-600 text-white rounded-md">Data Added</span>
+                                        <span class="px-3 py-1 text-sm bg-green-600 text-white rounded-md">{{message}}</span>
                                     {% endif %}
                                     {% if message.tags == 'error'%}
-                                        <span class="px-3 py-1 text-sm bg-red-600 text-white rounded-md">Not Added</span>
+                                        <span class="px-3 py-1 text-sm bg-red-600 text-white rounded-md">{{message}}</span>
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
@@ -205,6 +205,7 @@
                                 <div class="text-right">
                                     <h3 class="font-bold text-gray-800">₹{{receipt.total_fees|intcomma}}</h3>
                                     <p class="text-sm text-gray-500">{{receipt.date}}</p>
+                                    <span class="inline-block mt-1 px-2 py-1 text-xs font-medium bg-yellow-100 text-white-800 hover:bg-yellow-600 rounded-full"><a href="showformtoedit/{{receipt.receipt_no}}">Edit</a></span>
                                     <span class="inline-block mt-1 px-2 py-1 text-xs font-medium bg-red-100 text-white-800 hover:bg-red-600 rounded-full"><a href="receipt/{{receipt.receipt_no}}">Print</a></span>
                                     <span class="inline-block mt-1 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Paid</span>
                                     
